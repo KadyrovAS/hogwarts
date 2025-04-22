@@ -28,7 +28,7 @@ public class StudentService{
     }
 
     public Student edit(Student student) {
-        if (get(student.getId()) == null){
+        if (get(student.getId()) == null) {
             return null;
         }
         return studentRepository.save(student);
@@ -36,5 +36,17 @@ public class StudentService{
 
     public void delete(long id) {
         studentRepository.deleteById(id);
-        }
+    }
+
+    public Collection<Student> findByAgeBetween(int age1, int age2) {
+        return studentRepository.findByAgeBetween(age1, age2);
+    }
+
+    public Collection<Student> findByAgeGreaterThan(int age1) {
+        return studentRepository.findByAgeGreaterThan(age1);
+    }
+
+    public Collection<Student> findByAgeLessThan(int age2) {
+        return studentRepository.findByAgeLessThan(age2);
+    }
 }

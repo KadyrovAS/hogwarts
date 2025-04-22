@@ -14,27 +14,35 @@ public class FacultyService{
         this.facultyRepository = facultyRepository;
     }
 
-    public Faculty add(Faculty faculty){
+    public Faculty add(Faculty faculty) {
         faculty.setId(null);
         return facultyRepository.save(faculty);
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         facultyRepository.deleteById(id);
     }
 
-    public Faculty get(long id){
+    public Faculty get(long id) {
         return facultyRepository.findById(id).orElse(null);
     }
 
-    public Collection<Faculty> getAll(){
+    public Collection<Faculty> getAll() {
         return facultyRepository.findAll();
     }
 
-    public Faculty edit(Faculty faculty){
-        if (get(faculty.getId()) == null){
+    public Faculty edit(Faculty faculty) {
+        if (get(faculty.getId()) == null) {
             return null;
         }
         return facultyRepository.save(faculty);
+    }
+
+    public Collection<Faculty> findByName(String name) {
+        return facultyRepository.findFacultyByNameIgnoreCase(name);
+    }
+
+    public Collection<Faculty> findByColor(String color) {
+        return facultyRepository.findFacultyByColorIgnoreCase(color);
     }
 }
