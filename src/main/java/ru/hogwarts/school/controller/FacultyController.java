@@ -45,7 +45,7 @@ public class FacultyController{
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public Collection<Faculty> getAll(){
         return facultyService.getAll();
     }

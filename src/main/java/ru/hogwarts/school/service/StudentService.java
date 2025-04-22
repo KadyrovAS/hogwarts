@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Service
 public class StudentService{
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -20,7 +20,7 @@ public class StudentService{
     }
 
     public Student get(long id) {
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElse(null);
     }
 
     public Collection<Student> getAll() {
@@ -28,6 +28,9 @@ public class StudentService{
     }
 
     public Student edit(Student student) {
+        if (get(student.getId()) == null){
+            return null;
+        }
         return studentRepository.save(student);
     }
 
