@@ -32,7 +32,7 @@ public class FacultyService{
     }
 
     public Faculty edit(Faculty faculty) {
-        if (get(faculty.getId()) == null) {
+        if (!facultyRepository.existsById(faculty.getId())) {
             return null;
         }
         return facultyRepository.save(faculty);

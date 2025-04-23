@@ -28,7 +28,7 @@ public class StudentService{
     }
 
     public Student edit(Student student) {
-        if (get(student.getId()) == null) {
+        if (!studentRepository.existsById(student.getId())) {
             return null;
         }
         return studentRepository.save(student);

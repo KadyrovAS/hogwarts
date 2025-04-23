@@ -50,13 +50,18 @@ public class FacultyController{
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String color
     ) {
+        Collection<Faculty>collection;
         if (name != null && !name.isBlank()) {
-            return ResponseEntity.ok(facultyService.findByName(name));
+            collection = facultyService.findByName(name);
+        } else if (color != null && !color.isBlank()) {
+            collection = facultyService.findByColor(color);
+        } else {
+            collection = facultyService.getAll();
         }
-        if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(facultyService.findByColor(color));
+        if (collection.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facultyService.getAll());
+        return ResponseEntity.ok(collection);
     }
 
 }
