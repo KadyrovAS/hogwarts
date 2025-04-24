@@ -12,7 +12,7 @@ public class Student{
     private String name;
     private int age;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
@@ -40,6 +40,10 @@ public class Student{
         this.age = age;
     }
 
+    public String getFaculty() {
+        return faculty.getName() + " " + faculty.getColor();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -58,6 +62,7 @@ public class Student{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
+                " факультет " + faculty +
                 '}';
     }
 }
