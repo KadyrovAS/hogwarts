@@ -2,7 +2,6 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -18,37 +17,52 @@ public class StudentController{
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Student> get(@PathVariable long id){
+    public ResponseEntity<Student> get(@PathVariable long id) {
         Student student = studentService.get(id);
-        if (student == null){
+        if (student == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
     }
 
     @PostMapping
-    public Student add(@RequestBody Student student){
+    public Student add(@RequestBody Student student) {
         return studentService.add(student);
     }
 
     @PutMapping
-    public ResponseEntity<Student> edit(@RequestBody Student student){
+    public ResponseEntity<Student> edit(@RequestBody Student student) {
         long id = student.getId();
-        if (studentService.get(id) == null){
+        if (studentService.get(id) == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(studentService.edit(student));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Student> delete(@PathVariable Long id){
+    public ResponseEntity<Student> delete(@PathVariable Long id) {
         studentService.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public Collection<Student> getAll(){
-        return studentService.getAll();
+    public ResponseEntity<Collection<Student>> findByAgeBetween(
+            @RequestParam(required = false) Integer ageMin,
+            @RequestParam(required = false) Integer ageMax
+    ) {
+        Collection<Student>collection;
+        if (ageMin != null && ageMax != null) {
+            collection = studentService.findByAgeBetween(ageMin, ageMax);
+        }else if (ageMin != null) {
+            collection = studentService.findByAgeGreaterThan(ageMin);
+        }else if (ageMax != null) {
+            collection = studentService.findByAgeLessThan(ageMax);
+        } else {
+            collection = studentService.getAll();
+        }
+        if (collection.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(collection);
     }
-
 }
