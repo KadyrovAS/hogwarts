@@ -16,6 +16,12 @@ public class StudentController{
         this.studentService = studentService;
     }
 
+    @GetMapping("/forTest")
+    public ResponseEntity getInformationAboutStudents(){
+        return ResponseEntity.ok("All the students here are good!");
+    }
+
+
     @GetMapping("{id}")
     public ResponseEntity<Student> get(@PathVariable long id) {
         Student student = studentService.get(id);
