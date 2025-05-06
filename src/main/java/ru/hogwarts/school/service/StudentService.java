@@ -49,4 +49,16 @@ public class StudentService{
     public Collection<Student> findByAgeLessThan(int age2) {
         return studentRepository.findByAgeLessThan(age2);
     }
+
+    public int getNumberOfStudents(){
+        return studentRepository.getNumberOfStudents();
+    }
+
+    public float getAvgAgeOfStudents(){
+        return studentRepository.getAvgAgeOfStudents();
+    }
+
+    public Collection<Student>findByLastStudents(int limit){
+        return studentRepository.findByFiveLastStudents(limit);
+    }
 }

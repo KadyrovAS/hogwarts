@@ -2,10 +2,12 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -71,4 +73,25 @@ public class StudentController{
         }
         return ResponseEntity.ok(collection);
     }
+
+    @GetMapping("limit{limit}")
+    public ResponseEntity<Collection<Student>>findByFiveLastStudents(@PathVariable int limit){
+        Collection<Student> collection = studentService.findByLastStudents(limit);
+        if (collection.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }else{
+            return ResponseEntity.ok(collection);
+        }
+    }
+
+    @GetMapping("/number")
+    public int getNumberOfStudents(){
+        return studentService.getNumberOfStudents();
+    }
+
+    @GetMapping("/avgAge")
+    public float getAvgAgeOfStudents(){
+        return studentService.getAvgAgeOfStudents();
+    }
+
 }
