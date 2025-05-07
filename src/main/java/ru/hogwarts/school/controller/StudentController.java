@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/student")
-public class StudentController{
+public class StudentController {
     private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
@@ -19,7 +19,7 @@ public class StudentController{
     }
 
     @GetMapping("/forTest")
-    public ResponseEntity getInformationAboutStudents(){
+    public ResponseEntity getInformationAboutStudents() {
         return ResponseEntity.ok("All the students here are good!");
     }
 
@@ -58,39 +58,35 @@ public class StudentController{
             @RequestParam(required = false) Integer ageMin,
             @RequestParam(required = false) Integer ageMax
     ) {
-        Collection<Student>collection;
+        Collection<Student> collection;
         if (ageMin != null && ageMax != null) {
             collection = studentService.findByAgeBetween(ageMin, ageMax);
-        }else if (ageMin != null) {
+        } else if (ageMin != null) {
             collection = studentService.findByAgeGreaterThan(ageMin);
-        }else if (ageMax != null) {
+        } else if (ageMax != null) {
             collection = studentService.findByAgeLessThan(ageMax);
         } else {
             collection = studentService.getAll();
         }
-        if (collection.isEmpty()){
+        if (collection.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(collection);
     }
 
     @GetMapping("limit{limit}")
-    public ResponseEntity<Collection<Student>>findByFiveLastStudents(@PathVariable int limit){
+    public ResponseEntity<Collection<Student>> findByFiveLastStudents(@PathVariable int limit) {
         Collection<Student> collection = studentService.findByLastStudents(limit);
-        if (collection.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }else{
-            return ResponseEntity.ok(collection);
-        }
+        return ResponseEntity.ok(collection);
     }
 
     @GetMapping("/number")
-    public int getNumberOfStudents(){
+    public int getNumberOfStudents() {
         return studentService.getNumberOfStudents();
     }
 
     @GetMapping("/avgAge")
-    public float getAvgAgeOfStudents(){
+    public float getAvgAgeOfStudents() {
         return studentService.getAvgAgeOfStudents();
     }
 

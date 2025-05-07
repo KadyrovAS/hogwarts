@@ -16,12 +16,12 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-@Transactional
 public class AvatarServiceImpl implements AvatarService {
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
@@ -35,18 +35,19 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     @Override
+    @Transactional
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
         Student student = studentRepository.getById(studentId);
         Path filePath = Path.of(avatarsDir, studentId + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
 
-        try(
+        try (
                 InputStream is = avatarFile.getInputStream();
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
                 BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-                ){
+        ) {
             bis.transferTo(bos);
         }
         Avatar avatar = findAvatar(studentId);
@@ -59,6 +60,7 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     @Override
+    @Transactional
     public Avatar findAvatar(Long studentId) {
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
@@ -85,7 +87,12 @@ public class AvatarServiceImpl implements AvatarService {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    public Collection<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize){
+    @Transactional
+    public Collection<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
+        if (pageNumber <= 0 || pageSize <= 0) {
+            return new ArrayList<>();
+        }
+
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
     }

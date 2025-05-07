@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.AvatarService;
-import ru.hogwarts.school.service.AvatarServiceImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,18 +22,18 @@ import java.util.Collection;
 public class AvatarController {
     private final AvatarService avatarService;
 
-    public AvatarController(AvatarServiceImpl avatarServiceImpl) {
-        this.avatarService = avatarServiceImpl;
+    public AvatarController(AvatarService avatarService) {
+        this.avatarService = avatarService;
     }
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String>upLoadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException{
+    public ResponseEntity<String> upLoadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
         avatarService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(value = "/{id}/avatar/preview")
-    public ResponseEntity<byte[]>downloadAvatar(@PathVariable Long id){
+    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = avatarService.findAvatar(id);
 
         HttpHeaders headers = new HttpHeaders();
@@ -49,10 +47,10 @@ public class AvatarController {
     }
 
     @GetMapping(value = "/{id}/avatar")
-    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException{
+    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(id);
         Path path = Path.of(avatar.getFilePath());
-        try(
+        try (
                 InputStream is = Files.newInputStream(path);
                 OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
@@ -63,15 +61,11 @@ public class AvatarController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Avatar>>getPage(
+    public ResponseEntity<Collection<Avatar>> getPage(
             @RequestParam("page") Integer pageNumber,
             @RequestParam("size") Integer pageSize
-    ){
-        Collection<Avatar>collection = avatarService.getAllAvatars(pageNumber, pageSize);
-        if (collection.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }else {
-            return ResponseEntity.ok(collection);
-        }
+    ) {
+        Collection<Avatar> collection = avatarService.getAllAvatars(pageNumber, pageSize);
+        return ResponseEntity.ok(collection);
     }
 }
