@@ -16,6 +16,12 @@ public class FacultyController{
         this.facultyService = facultyService;
     }
 
+    @GetMapping("/forTest")
+    public ResponseEntity getInfoAboutFaculty(){
+        return ResponseEntity.ok("This is a good faculty!");
+    }
+
+
     @GetMapping("{id}")
     public ResponseEntity<Faculty> get(@PathVariable long id) {
         Faculty faculty = facultyService.get(id);

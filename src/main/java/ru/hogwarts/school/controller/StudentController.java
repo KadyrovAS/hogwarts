@@ -2,19 +2,27 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
-public class StudentController{
+public class StudentController {
     private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
+
+    @GetMapping("/forTest")
+    public ResponseEntity getInformationAboutStudents() {
+        return ResponseEntity.ok("All the students here are good!");
+    }
+
 
     @GetMapping("{id}")
     public ResponseEntity<Student> get(@PathVariable long id) {
@@ -50,19 +58,36 @@ public class StudentController{
             @RequestParam(required = false) Integer ageMin,
             @RequestParam(required = false) Integer ageMax
     ) {
-        Collection<Student>collection;
+        Collection<Student> collection;
         if (ageMin != null && ageMax != null) {
             collection = studentService.findByAgeBetween(ageMin, ageMax);
-        }else if (ageMin != null) {
+        } else if (ageMin != null) {
             collection = studentService.findByAgeGreaterThan(ageMin);
-        }else if (ageMax != null) {
+        } else if (ageMax != null) {
             collection = studentService.findByAgeLessThan(ageMax);
         } else {
             collection = studentService.getAll();
         }
-        if (collection.isEmpty()){
+        if (collection.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(collection);
     }
+
+    @GetMapping("limit{limit}")
+    public ResponseEntity<Collection<Student>> findByFiveLastStudents(@PathVariable int limit) {
+        Collection<Student> collection = studentService.findByLastStudents(limit);
+        return ResponseEntity.ok(collection);
+    }
+
+    @GetMapping("/number")
+    public int getNumberOfStudents() {
+        return studentService.getNumberOfStudents();
+    }
+
+    @GetMapping("/avgAge")
+    public float getAvgAgeOfStudents() {
+        return studentService.getAvgAgeOfStudents();
+    }
+
 }
