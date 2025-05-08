@@ -52,12 +52,12 @@ public class Student{
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name);
+        return id != null ? id.equals(student.id) : student.id == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age);
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
