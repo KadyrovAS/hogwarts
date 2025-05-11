@@ -90,4 +90,24 @@ public class StudentController {
         return studentService.getAvgAgeOfStudents();
     }
 
+    @GetMapping("/sort")
+    public ResponseEntity<Collection<Student>> getSortedStudents() {
+        return ResponseEntity.ok(studentService.getSortedStudents());
+    }
+
+    @GetMapping("/avgAge2")
+    public double getAvgAge() {
+        return studentService.getAvgAge();
+    }
+
+    @GetMapping("/sumOfIterate1")
+    public long getSumOfIterate1(){
+        return studentService.getSumOfIterate1();
+    }
+
+    @GetMapping("/sumOfIterate2")
+    public long getSumOfIterate2(){
+        return studentService.getSumOfIterate1();
+    }
+
 }

@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.apache.catalina.valves.rewrite.InternalRewriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hogwarts.school.model.Student;
@@ -7,6 +8,10 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.repositories.StudentRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class StudentService{
@@ -78,5 +83,40 @@ public class StudentService{
     public Collection<Student>findByLastStudents(int limit){
         logger.info("Was invoked method for finding by last {} students", limit);
         return studentRepository.findByFiveLastStudents(limit);
+    }
+
+    public Collection<Student>getSortedStudents(){
+        logger.info("Was invoked method for getting sorted students");
+        return studentRepository
+                .findAll()
+                .stream()
+                .parallel()
+                .peek(s->s.setName(s.getName().toUpperCase()))
+                .sorted(Comparator.comparing(Student::getName))
+                .toList();
+    }
+
+    public double getAvgAge(){
+        logger.info("Was invoked method #2 for getting avg age of students");
+        return studentRepository
+                .findAll()
+                .stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
+
+    public long getSumOfIterate1(){
+        int value = 1_000_000;
+        return (1L + value) * value / 2;
+    }
+
+    public long getSumOfIterate2(){
+        int value = 1_000_000;
+        return Stream
+                .iterate(1L, a->a + 1)
+                .limit(value)
+                .parallel()
+                .reduce(0L, Long::sum);
     }
 }

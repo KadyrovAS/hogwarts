@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.school.repositories.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 @Service
 public class FacultyService{
@@ -58,5 +59,14 @@ public class FacultyService{
     public Collection<Faculty> findByColor(String color) {
         logger.info("Was invoked method for finding a faculty by color  {}", color);
         return facultyRepository.findFacultyByColorIgnoreCase(color);
+    }
+
+    public String getLongestName(){
+        return facultyRepository
+                .findAll()
+                .stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElse(null);
     }
 }
