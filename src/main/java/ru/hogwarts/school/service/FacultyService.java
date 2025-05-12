@@ -15,7 +15,7 @@ public class FacultyService{
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
     }
-    Logger logger = LoggerFactory.getLogger(FacultyService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     public Faculty add(Faculty faculty) {
         logger.info("Was invoked method for adding a faculty of {}", faculty.getName());
