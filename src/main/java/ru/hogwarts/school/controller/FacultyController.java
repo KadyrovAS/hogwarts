@@ -70,4 +70,8 @@ public class FacultyController{
         return ResponseEntity.ok(collection);
     }
 
+    @GetMapping("/longestName")
+    public String getLongestName(){
+        return facultyService.getLongestName();
+    }
 }
