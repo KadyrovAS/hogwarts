@@ -1,6 +1,8 @@
 package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class AvatarServiceImpl implements AvatarService {
+    private static final Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
 
@@ -37,6 +41,7 @@ public class AvatarServiceImpl implements AvatarService {
     @Override
     @Transactional
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
+        logger.info("Was invoked method for upload avatar for student with id = {}", studentId);
         Student student = studentRepository.getById(studentId);
         Path filePath = Path.of(avatarsDir, studentId + "." + getExtensions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
@@ -62,10 +67,12 @@ public class AvatarServiceImpl implements AvatarService {
     @Override
     @Transactional
     public Avatar findAvatar(Long studentId) {
+        logger.info("Was invoked method for find student by id = {}", studentId);
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
     public byte[] generateDataForDB(Path filePath) throws IOException {
+        logger.info("Was invoked method for generate data for DB");
         try (
                 InputStream is = Files.newInputStream(filePath);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
@@ -80,15 +87,21 @@ public class AvatarServiceImpl implements AvatarService {
 
             ImageIO.write(preview, getExtensions(filePath.getFileName().toString()), baos);
             return baos.toByteArray();
+        }catch (IOException e) {
+            logger.error(e.getMessage());
+            throw new IOException(e);
         }
     }
 
     private String getExtensions(String fileName) {
+        logger.info("Was invoked method for getting extensions of file {}", fileName);
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     @Transactional
     public Collection<Avatar> getAllAvatars(Integer pageNumber, Integer pageSize) {
+        logger.info("Was invoked method for getting all avatars with page number {} and page size {}",
+                pageNumber, pageSize);
         if (pageNumber <= 0 || pageSize <= 0) {
             return new ArrayList<>();
         }
