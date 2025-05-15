@@ -65,8 +65,6 @@ public class Student{
         return "Student{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", age=" + age +
-                " факультет " + faculty +
-                '}';
+                ", age=" + age + '}';
     }
 }

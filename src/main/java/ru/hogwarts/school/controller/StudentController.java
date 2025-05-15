@@ -107,7 +107,17 @@ public class StudentController {
 
     @GetMapping("/sumOfIterate2")
     public long getSumOfIterate2(){
-        return studentService.getSumOfIterate1();
+        return studentService.getSumOfIterate2();
+    }
+
+    @GetMapping("/print-parallel")
+    public void printParallel(){
+        studentService.printParallel();
+    }
+
+    @GetMapping("/print-synchronized")
+    public void printSynchronized(){
+        studentService.printSynchronized();
     }
 
 }
