@@ -150,9 +150,9 @@ public class StudentService{
     public void printSynchronized(){
         List<Student>studentList = studentRepository.findAll();
 
-        Stream.of(0, 1).forEach(i-> printStudentParallel(studentList.get(i)));
-        new PrintStudents(studentList, new int[]{2, 3}, false).start();
-        new PrintStudents(studentList, new int[]{4, 5}, false).start();
+        Stream.of(0, 1).forEach(i-> printStudentSynchronized(studentList.get(i)));
+        new PrintStudents(studentList, new int[]{2, 3}, true).start();
+        new PrintStudents(studentList, new int[]{4, 5}, true).start();
     }
 
 
