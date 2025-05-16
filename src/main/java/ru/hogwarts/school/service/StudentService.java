@@ -1,20 +1,39 @@
 package ru.hogwarts.school.service;
 
-import org.apache.catalina.valves.rewrite.InternalRewriteMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hogwarts.school.model.Student;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.repositories.StudentRepository;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 public class StudentService{
+
+    class PrintStudents extends Thread{
+        private List<Student>studentList;
+        private int[] indexes;
+        private boolean isSynchronized;
+        public PrintStudents(List<Student> studentList, int[] indexes, boolean isSynchronized){
+            this.studentList = studentList;
+            this.indexes = indexes;
+        }
+
+        @Override
+        public void run(){
+            if (isSynchronized) {
+                Arrays.stream(indexes).forEach(i -> printStudentSynchronized(studentList.get(i)));
+            }else{
+                Arrays.stream(indexes).forEach(i -> printStudentParallel(studentList.get(i)));
+            }
+        }
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
     private final StudentRepository studentRepository;
 
@@ -118,5 +137,29 @@ public class StudentService{
                 .limit(value)
                 .parallel()
                 .reduce(0L, Long::sum);
+    }
+
+    public void printParallel(){
+        List<Student>studentList = studentRepository.findAll();
+
+        Stream.of(0, 1).forEach(i-> printStudentParallel(studentList.get(i)));
+        new PrintStudents(studentList, new int[]{2, 3}, false).start();
+        new PrintStudents(studentList, new int[]{4, 5}, false).start();
+    }
+
+    public void printSynchronized(){
+        List<Student>studentList = studentRepository.findAll();
+
+        Stream.of(0, 1).forEach(i-> printStudentSynchronized(studentList.get(i)));
+        new PrintStudents(studentList, new int[]{2, 3}, true).start();
+        new PrintStudents(studentList, new int[]{4, 5}, true).start();
+    }
+
+
+    private synchronized void printStudentParallel(Student student){
+        System.out.println(student + " from thread " + Thread.currentThread().getName());
+    }
+    private synchronized void printStudentSynchronized(Student student){
+        System.out.println(student + " from thread " + Thread.currentThread().getName());
     }
 }
